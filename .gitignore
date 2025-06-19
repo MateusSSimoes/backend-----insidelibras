@@ -1,0 +1,15 @@
+# Ignorar todas as node_modules do projeto
+**/node_modules/
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar ambiente local
+.env
+
+# Ignorar pastas do VSC
+.vscode/
