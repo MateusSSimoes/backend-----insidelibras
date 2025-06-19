@@ -33,7 +33,7 @@ app.post('/send-email', async (req, res) => {
   const mailOptions = {
     from: 'InsideLibras.Form@gmail.com',  // seu e-mail autorizado
     replyTo: email,                       // e-mail do cliente para resposta
-    to: 'InsideLibras@gmail.com',
+    to: 'InsideLibrasoficial@gmail.com',
     subject: `Contato via site: ${subject || 'Sem assunto'}`,
     text: `
       Nome: ${name}
