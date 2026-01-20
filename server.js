@@ -1,7 +1,10 @@
 require('dotenv').config();
 
 const express = require('express');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
@@ -19,40 +22,40 @@ app.post('/send-email', async (req, res) => {
   const { name, email, subject, message, novidades } = req.body;
 
   if (!name || !email || !message) {
-    return res.status(400).json({ success: false, error: 'Nome, e-mail e mensagem são obrigatórios.' });
+    return res.status(400).json({
+      success: false,
+      error: 'Nome, e-mail e mensagem são obrigatórios.',
+    });
   }
-
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-
-  const mailOptions = {
-    from: 'InsideLibras.Form@gmail.com',  // seu e-mail autorizado
-    replyTo: email,                       // e-mail do cliente para resposta
-    to: 'InsideLibrasoficial@gmail.com',
-    subject: `Contato via site: ${subject || 'Sem assunto'}`,
-    text: `
-      Nome: ${name}
-      E-mail: ${email}
-      Opt-in para novidades: ${novidades ? 'Sim' : 'Não'}
-
-      Mensagem:
-      ${message}
-    `
-  };
 
   try {
-    await transporter.sendMail(mailOptions);
-    res.status(200).json({ success: true, message: 'E-mail enviado com sucesso!' });
+    await resend.emails.send({
+      from: 'InsideLibras <onboarding@resend.dev>',
+      to: ['InsideLibrasoficial@gmail.com'],
+      replyTo: email,
+      subject: `Contato via site: ${subject || 'Sem assunto'}`,
+      html: `
+        <p><strong>Nome:</strong> ${name}</p>
+        <p><strong>E-mail:</strong> ${email}</p>
+        <p><strong>Opt-in novidades:</strong> ${novidades ? 'Sim' : 'Não'}</p>
+        <hr/>
+        <p>${message}</p>
+      `,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'E-mail enviado com sucesso!',
+    });
   } catch (error) {
     console.error('Erro ao enviar e-mail:', error);
-    res.status(500).json({ success: false, error: 'Erro ao enviar o e-mail.' });
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao enviar o e-mail.',
+    });
   }
 });
+
 
 // Inicia o servidor
 app.listen(port, () => {
