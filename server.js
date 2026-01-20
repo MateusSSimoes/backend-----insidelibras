@@ -21,40 +21,25 @@ app.post('/send-email', async (req, res) => {
 
   const { name, email, subject, message, novidades } = req.body;
 
-  if (!name || !email || !message) {
-    return res.status(400).json({
-      success: false,
-      error: 'Nome, e-mail e mensagem são obrigatórios.',
-    });
-  }
-
   try {
-    await resend.emails.send({
+    console.log('ANTES DO RESEND');
+
+    const result = await resend.emails.send({
       from: 'InsideLibras <onboarding@resend.dev>',
-      to: ['InsideLibrasoficial@gmail.com'],
-      replyTo: email,
-      subject: `Contato via site: ${subject || 'Sem assunto'}`,
-      html: `
-        <p><strong>Nome:</strong> ${name}</p>
-        <p><strong>E-mail:</strong> ${email}</p>
-        <p><strong>Opt-in novidades:</strong> ${novidades ? 'Sim' : 'Não'}</p>
-        <hr/>
-        <p>${message}</p>
-      `,
+      to: ['mateussimoes2008@gmail.com'],
+      subject: 'Teste Resend',
+      html: '<p>Teste</p>',
     });
 
-    res.status(200).json({
-      success: true,
-      message: 'E-mail enviado com sucesso!',
-    });
+    console.log('DEPOIS DO RESEND', result);
+
+    return res.status(200).json({ success: true });
   } catch (error) {
-    console.error('Erro ao enviar e-mail:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erro ao enviar o e-mail.',
-    });
+    console.error('ERRO NO RESEND:', error);
+    return res.status(500).json({ success: false });
   }
 });
+
 
 
 // Inicia o servidor
