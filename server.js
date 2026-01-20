@@ -19,14 +19,12 @@ app.use(bodyParser.json());
 app.post('/send-email', async (req, res) => {
   console.log('Recebido:', req.body);
 
-  const { name, email, subject, message, novidades } = req.body;
-
   try {
     console.log('ANTES DO RESEND');
 
     const result = await resend.emails.send({
       from: 'InsideLibras <onboarding@resend.dev>',
-      to: ['mateussimoes2008@gmail.com'],
+      to: ['mateusgamer626@gmail.com'],
       subject: 'Teste Resend',
       html: '<p>Teste</p>',
     });
@@ -39,6 +37,7 @@ app.post('/send-email', async (req, res) => {
     return res.status(500).json({ success: false });
   }
 });
+
 
 
 
